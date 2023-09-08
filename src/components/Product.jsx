@@ -1,11 +1,38 @@
+import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
+import { VITE_BACKEND_URI } from '../App'
 
 /* eslint-disable react/prop-types */
-const Product = ({ product }) => {
+const Product = ({ product, getProducts }) => {
 	let USDollar = new Intl.NumberFormat('en-US', {
 		style: 'currency',
 		currency: 'USD',
 	})
+
+	const deleteProduct = async (id) => {
+		const result = await Swal.fire({
+			title: `Do you really want to delete "${product.name}"?`,
+			icon: 'warning',
+			showCancelButton: true,
+			cancelButtomnColor: '#d33',
+			confirmButtonColor: '#3085d6',
+			confirmButtonText: 'Yes, go ahead and delete it!',
+		})
+
+		if (result.isConfirmed) {
+			try {
+				const response = await axios.delete(
+					`${VITE_BACKEND_URI}/api/products/${id}`
+				)
+				toast.success(`Deleted "${response.data.name}" successfully!`)
+				getProducts()
+			} catch (error) {
+				toast.error(error.message)
+			}
+		}
+	}
 
 	return (
 		<>
@@ -26,12 +53,12 @@ const Product = ({ product }) => {
 						>
 							Edit
 						</Link>
-						<Link
-							to={`/delete/${product._id}`}
+						<button
+							onClick={() => deleteProduct(product._id)}
 							className='inline-block w-full text-center shadow-md text-small bg-red-700 text-white rounded-sm px-4 py-1 fiont-bold hover:bg-red-500 hover:cursor-pointer'
 						>
 							Delete
-						</Link>
+						</button>
 					</div>
 				</div>
 			</div>

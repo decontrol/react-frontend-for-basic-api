@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Product from '../components/Product'
 import { Link } from 'react-router-dom'
+import { VITE_BACKEND_URI } from '../App'
 
 const HomePage = () => {
 	const [products, setProducts] = useState([])
@@ -11,7 +12,7 @@ const HomePage = () => {
 	const getProducts = async () => {
 		try {
 			setIsLoading(true)
-			const response = await axios.get('http://localhost:3000/api/products')
+			const response = await axios.get(`${VITE_BACKEND_URI}/api/products`)
 			// console.log(response.data)
 			setProducts(response.data)
 			setTimeout(() => {
@@ -41,7 +42,13 @@ const HomePage = () => {
 					<h1>Loading...</h1>
 				) : products.length > 0 ? (
 					products.map((product, index) => {
-						return <Product key={index} product={product} />
+						return (
+							<Product
+								key={index}
+								product={product}
+								getProducts={getProducts}
+							/>
+						)
 					})
 				) : (
 					<h1>There are no products</h1>
