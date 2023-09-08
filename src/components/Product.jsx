@@ -9,7 +9,7 @@ const Product = ({ product }) => {
 
 	return (
 		<>
-			<div className='bg-white rounded shadow-lg overflow-hidden'>
+			<div className='bg-white border-4 border-white rounded shadow-lg overflow-hidden'>
 				<img
 					src={product.image}
 					alt={product.name}
@@ -27,7 +27,7 @@ const Product = ({ product }) => {
 							Edit
 						</Link>
 						<Link
-							to={`/edit/${product._id}`}
+							to={`/delete/${product._id}`}
 							className='inline-block w-full text-center shadow-md text-small bg-red-700 text-white rounded-sm px-4 py-1 fiont-bold hover:bg-red-500 hover:cursor-pointer'
 						>
 							Delete

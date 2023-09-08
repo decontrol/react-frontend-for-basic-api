@@ -1,17 +1,54 @@
+import axios from 'axios'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const CreatePage = () => {
 	const [name, setName] = useState('')
-	const [quantity, setQuantity] = useState(0)
-	const [price, setPrice] = useState(0)
+	const [quantity, setQuantity] = useState('')
+	const [price, setPrice] = useState('')
 	const [image, setImage] = useState('')
+
+	const navigate = useNavigate()
+
+	const [isLoading, setIsLoading] = useState(false)
+
+	const saveProduct = async (e) => {
+		e.preventDefault()
+		if (name === '' || quantity === '' || price === '' || image === '') {
+			alert('Please fill all the fields')
+			return
+		}
+
+		try {
+			setIsLoading(true)
+			const response = await axios.post('http://localhost:3000/api/products', {
+				name,
+				quantity,
+				price,
+				image,
+			})
+			toast.success(`Saved ${response.data.name} successfully!`)
+			setName('')
+			setQuantity('')
+			setPrice('')
+			setImage('')
+			setTimeout(() => {
+				setIsLoading(false)
+				navigate('/')
+			}, 2000)
+		} catch (error) {
+			toast.error(error.message)
+			setIsLoading(false)
+		}
+	}
 
 	return (
 		<div className='max-w-lg bg-white shadow-lg mx-auto p-7 rounded mt-6'>
 			<h2 className='font-semibold text-2xl mb-4 block text-center'>
 				Create a Product
 			</h2>
-			<form>
+			<form onSubmit={saveProduct}>
 				<div className='space-y-2'>
 					<div>
 						<label htmlFor=''>Name</label>
@@ -54,9 +91,11 @@ const CreatePage = () => {
 						/>
 					</div>
 					<div>
-						<button className='block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-500 hover:cursor-pointer'>
-							Save
-						</button>
+						{!isLoading && (
+							<button className='block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-500 hover:cursor-pointer'>
+								Save
+							</button>
+						)}
 					</div>
 				</div>
 			</form>
